@@ -10,6 +10,8 @@ Dataset is collected from TechStream Solutions through several years of operatio
 The datasets are in the shared folder on Google Drive:
 https://drive.google.com/drive/folders/1qhOW9Y2orRXuzbX-kXEmuJ7TMQiRs2Uv?usp=drive_link
 
+We collected data from 5 different excel files and try to idientify the connection among the files.
+
 ### B - The main goals
 
 By doing this analysis, TechStream Solutions's aiming to :
@@ -21,13 +23,84 @@ By doing this analysis, TechStream Solutions's aiming to :
 
 ### C - Results
 
-Claculate such Unit Economics below to identify key message about their business:
+Calculate such Unit Economics below via identifying key metrics about their operations. For some of the metrics, The calculation shall be applied for data in March 2023 only.
 
-#### 1. CAC
-#### 2. ARPU
+#### 1. CAC : CUSTOMER ACQUISITION COST
+
+1.1 - Total sales and marketing expense include below factor:
+
+* Total sales amount: collected by summing total receipt amounts from amount in receipt history file. Result is 83033.
+* Total salary paid for Sales: collected from payroll file. Result is 5950.
+* Total monthly expense for marketing software costs: collected from monthly expense file. Result is 1700.
+* Total cost for online ads: collected from daily marketing spending file. Result is 68830
+
+
+Total sales and marketing expense we calculated is 159513. [1]
+
+##### Codes:
+
+```
+# Total sales:
+total_sales = df_receipt_history_data.receipt_amount.sum()
+
+# Total payroll of Sales and Marketing team:
+sale_salary = df_payroll_data[df_payroll_data["department"].isin(['Sales','Marketing'])]["paid"].sum()
+
+# Total expense for marketing sofware: monthly expense (item=saleforce, )
+mkt_software_cost = df_monthly_expense_data[df_monthly_expense_data["item"] == "Salesforce"]["amount"].sum()
+
+#content creation: no need for cals since this is already included in online merketing expenses.
+
+# Total exepnse for online ads:
+online_ad_cost = df_daily_mkt_spending_data.spending.sum()
+
+# Total expense relating to sales and marketing activities:
+total_sale_mkt_espenses = total_sales + sale_salary + mkt_software_cost + online_ad_cost
+```
+
+1.2 - Number of new customers acquired:
+
+We collect number of new customer TechStream acquired from the receipt history file, but not the Churn data due to the fear of mising out such new customer who is not yet been remarked as churn.
+We will filter the column new_customer  in "recceipt history file"  (New customers are remarked as 1), and then count the total of them. Number of new customers acquired is 63. [2] 
+
+##### Codes:
+
+```
+# number of new customer acquired: (không lấy trong bảng churn date vì sẽ bị miss data của những khách hàng chưa là churn)
+
+new_cust_count = df_receipt_history_data[df_receipt_history_data["new_customer"] == 1].new_customer.count()
+
+#len(df_receipt_history_data[df_receipt_history_data["new_customer"] == 1]["customer_id"].unique())
+```
+
+From the [1] and [2], CAC is 2531.9523809523807 or TechStream need to spend around $2,532 in March 2023 to acquire a new customer.
+
+#### 2. ARPU: Average Revenue Per User 
+
+2.1 - Total revenue is 83033, which is the summed amount collected from receipt history file. [3]
+
+2.2 - Total number of users is 292, which is the total customer from receipt history file. [4]
+
+##### Codes:
+
+```
+# total revenue : receipt amount --> sum
+revenue_total = df_receipt_history_data.receipt_amount.sum()
+
+#number of customer : receipt history --> count account unique
+#num_cust = df_receipt_history_data.customer_id.unique().size
+num_cust = len(df_receipt_history_data.customer_id.unique())
+
+```
+From [3] and [4], ARPU is 284.3595890410959 meaning each customer generated ~$284 in revenue on average
+during March 2023.
+
+
 #### 3. COGS
 #### 4. Gross Margin
 #### 5. LTV
 #### 6. LTV / CAC
 
 ## Findings Summary:
+
+From the data collected during March 2023, the company need approximatly $2,532 to get a new customer. In this period, they already acquired 63 new customers (churn ones inclusive).
