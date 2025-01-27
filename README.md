@@ -12,6 +12,57 @@ https://drive.google.com/drive/folders/1qhOW9Y2orRXuzbX-kXEmuJ7TMQiRs2Uv?usp=dri
 
 We collected data from 5 different excel files and try to idientify the connection among the files.
 
+First 5 rows of Customer lifespan data:
+
+|   | Unnamed: 0 | start_date | churn_date |
+|--:|-----------:|-----------:|-----------:|
+| 0 |       1000 | 2021-11-15 | 2022-09-14 |
+| 1 |       1001 | 2022-04-15 | 2023-02-16 |
+| 2 |       1002 | 2022-10-30 | 2023-02-04 |
+| 3 |       1003 | 2021-08-22 | 2023-02-07 |
+| 4 |       1004 | 2021-08-23 | 2022-02-02 |
+
+First 5 rows of Daily Marketing spending data:
+
+|     |       date |      channel | spending |
+|----:|-----------:|-------------:|---------:|
+| 236 | 2023-03-01 |   Google Ads |      449 |
+| 237 | 2023-03-01 | Facebook Ads |      229 |
+| 238 | 2023-03-01 | LinkedIn Ads |      835 |
+| 239 | 2023-03-01 |  Twitter Ads |      986 |
+| 240 | 2023-03-02 |   Google Ads |      912 |
+
+First 5 rows of Daily expense data:
+
+|    |  # |      month |          category |                 item | amount |
+|---:|---:|-----------:|------------------:|---------------------:|-------:|
+| 18 | 19 | 2023-03-01 |      Server Costs |          AWS Hosting |   8400 |
+| 19 | 20 | 2023-03-01 |      Server Costs | Google Cloud Storage |   4400 |
+| 20 | 21 | 2023-03-01 | Software Licenses |       Atlassian Jira |   1400 |
+| 21 | 22 | 2023-03-01 | Software Licenses |                Slack |    900 |
+| 22 | 23 | 2023-03-01 | Software Licenses |           Salesforce |   1700 |
+
+First 5 rơws of Payroll data:
+
+|    |      month | department | employee_name |          position | paid |
+|---:|-----------:|-----------:|--------------:|------------------:|-----:|
+| 34 | 2023-03-01 |      Sales |      John Doe |     Sales Manager | 1500 |
+| 35 | 2023-03-01 |      Sales |    Jane Smith |   Sales Associate |  600 |
+| 36 | 2023-03-01 |      Sales |     Jim Brown |   Sales Associate |  700 |
+| 37 | 2023-03-01 |      Sales |  Laura Miller |   Sales Associate |  800 |
+| 38 | 2023-03-01 |  Marketing | Alice Johnson | Marketing Manager | 1650 |
+
+
+First 5 row of Receipt history head :
+
+|     |       date | customer_id | receipt_amount | new_customer |
+|----:|-----------:|------------:|---------------:|-------------:|
+| 618 | 2023-03-01 |        1062 |            103 |            0 |
+| 619 | 2023-03-01 |        2243 |            157 |            0 |
+| 620 | 2023-03-01 |        1166 |            372 |            0 |
+| 621 | 2023-03-01 |        2406 |            426 |            1 |
+| 622 | 2023-03-01 |        2761 |             41 |            1 |
+
 ### B - The main goals
 
 By doing this analysis, TechStream Solutions's aiming to :
