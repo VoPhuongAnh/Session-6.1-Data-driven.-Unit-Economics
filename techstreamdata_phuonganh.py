@@ -12,20 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-"""## Load dataset (cách 1):"""
-
-df_customer_life_span = pd.read_excel(
-"https://docs.google.com/spreadsheets/d/1by8tPHwOnq3uKYK2E7sA9VBUYoPM4p1Rnrm_Ss9cyHI/export?format=xlsx")
-
-df_daily_mkt_spending = pd.read_excel("https://docs.google.com/spreadsheets/d/1AZOIThOV4P-0eYDge53ZwumVkfkHoYPWxst3k3Bv87c/export?format=xlsx")
-
-df_monthly_expense = pd.read_excel("https://docs.google.com/spreadsheets/d/10OGbaywwMIqKgnPGy8VDvpBVtjyqln47iYa2lFhI9Mw/export?format=xlsx")
-
-df_payroll = pd.read_excel("https://docs.google.com/spreadsheets/d/1c_WihqTZCQvNgxzmd-OwhR9i5diwtfxXVLyMn8R-Lp4/export?format=xlsx")
-
-df_receipt_history = pd.read_excel("https://docs.google.com/spreadsheets/d/1qayqML1zCKdmtzutkcy9LWvE6xFRm6TGBEVkHHJKIuE/export?format=xlsx")
-
-"""## Load dataset (cách 2):
+"""## Load dataset :
 
 filtered data in March 2023 only
 """
