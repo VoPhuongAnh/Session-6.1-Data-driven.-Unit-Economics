@@ -80,34 +80,42 @@ Calculate such Unit Economics below via identifying key metrics about their oper
 
 1.1 - Total sales and marketing expense include below factor:
 
-* Total sales amount: collected by summing total receipt amounts from amount in receipt history file. Result is 83033.
-* Total salary paid for Sales: collected from payroll file. Result is 5950.
-* Total monthly expense for marketing software costs: collected from monthly expense file. Result is 1700.
-* Total cost for online ads: collected from daily marketing spending file. Result is 68830
+* Total salary paid for Sales & Marketing: collected from payroll file. Result is $5,950.
+* Total monthly expense for marketing software costs: collected from monthly expense file. Result is $1,700.
+* Total cost for online ads: collected from daily marketing spending file. Result is $68,830
 
 
-Total sales and marketing expense we calculated is 159513. [1]
+Total sales and marketing expense we calculated is $76,480. [1]
 
 ##### Codes:
 
 ```
-# Total sales:
-total_sales = df_receipt_history_data.receipt_amount.sum()
-
-# Total payroll of Sales and Marketing team:
-sale_salary = df_payroll_data[df_payroll_data["department"].isin(['Sales','Marketing'])]["paid"].sum()
-
-# Total expense for marketing sofware: monthly expense (item=saleforce, )
-mkt_software_cost = df_monthly_expense_data[df_monthly_expense_data["item"] == "Salesforce"]["amount"].sum()
-
-#content creation: no need for cals since this is already included in online merketing expenses.
-
-# Total exepnse for online ads:
+# 1. Online ads: Daily Marketing spending --> Sum of Spending:
 online_ad_cost = df_daily_mkt_spending_data.spending.sum()
 
-# Total expense relating to sales and marketing activities:
-total_sale_mkt_espenses = total_sales + sale_salary + mkt_software_cost + online_ad_cost
+# 2. Payroll of sales and mkt: 
+sale_mkt_salary = df_payroll_data[df_payroll_data["department"].isin(['Sales','Marketing'])]["paid"].sum()
+
+# 3. Marketing sofware: Daily expense --> Category (Software Licenses) --> Item (item=saleforce)
+mkt_software_cost = df_monthly_expense_data[df_monthly_expense_data["item"] == "Salesforce"]["amount"].sum()
+
+# 4.Content creation: included trong chi phí online mkt
+
+
+
+total_sale_mkt_espenses = sale_mkt_salary + mkt_software_cost + online_ad_cost
+
+
+print('Total Salary of Sales is: ', sale_mkt_salary)
+print('Total Cost of marketing software is: ', mkt_software_cost)
+print('Total cost of online ads is: ', online_ad_cost)
+print('Total expense for sales and marketing is: ', total_sale_mkt_espenses)
 ```
+
+Total Salary of Sales and Marketing is:  5950
+Total Cost of marketing software is:  1700
+Total cost of online ads is:  68830
+Total expense for sales and marketing is:  76480
 
 1.2 - Number of new customers acquired:
 
@@ -124,11 +132,11 @@ new_cust_count = df_receipt_history_data[df_receipt_history_data["new_customer"]
 #len(df_receipt_history_data[df_receipt_history_data["new_customer"] == 1]["customer_id"].unique())
 ```
 
-From the [1] and [2], CAC is 2531.9523809523807 or TechStream need to spend around $2,532 in March 2023 to acquire a new customer.
+From the [1] and [2], CAC is:  1213.968253968254 or TechStream need to spend around $1,213.97 in March 2023 to acquire a new customer.
 
 #### 2. ARPU: Average Revenue Per User 
 
-2.1 - Total revenue is 83033, which is the summed amount collected from receipt history file. [3]
+2.1 - Total revenue is $83,033, which is the summed amount collected from receipt history file. [3]
 
 2.2 - Total number of users is 292, which is the total customer from receipt history file. [4]
 
@@ -148,10 +156,81 @@ during March 2023.
 
 
 #### 3. COGS
+
+COGS is calculated from such cost and expense direclty and indirreclty relates to producing its services such as sever expense, software license fee for such operation service. Saleforce should not be included since it's already calculated in CAC. Labor cost for Engineering team is also a factor to be considered when we calculate COGS.
+
+##### Codes:
+```
+# Expense for server and sofware license: 
+server_cost = df_monthly_expense_data[df_monthly_expense_data['category'] == 'Server Costs']['amount'].sum()
+
+software_licenses_cost = df_monthly_expense_data[df_monthly_expense_data['item'].isin(['Atlassian Jira', 'Slack', 'Zoom'])]['amount'].sum()
+
+# Direct relating labor cost --> Salary of Engineering in Payroll data:
+labor_cost = df_payroll_data[df_payroll_data['department'] == 'Engineering'].paid.sum()
+
+# Cost of Goods Sold:
+COGS = server_cost + software_licenses_cost + labor_cost
+
+```
+Total cost for Server is $12,800; cost for Software License is $2,840; Direct labor cost is $5,200.
+From the calculation of these factors, we have the direct cost of producing the goods or services that TechStream sold in March 2023 is $20,840. 
+
 #### 4. Gross Margin
+
+##### Codes:
+```
+# Sales revenue --> revenue_total
+
+# COGS:
+
+# Gross Margin = (revenue - COGS) / Revenue * 100
+gross_margin = (revenue_total - COGS) / revenue_total * 100
+
+print('Gross margin is: ',gross_margin)
+
+```
+The Gross margin of TechStream in March 2023 is around 74.9% means that the businesss heath of this company is quite good.
+
+
 #### 5. LTV
+
+##### Codes:
+```
+# ARPU --> arpu (calculated above)
+
+# avg_lifespan_months --> churn_date - start_date
+
+df_customer_life_span_data['cust_life_span'] = df_customer_life_span_data['churn_date']- df_customer_life_span_data['start_date']
+df_customer_life_span_data['cust_life_span'].mean()
+
+# GrossMargin --> gross_margin
+
+cust_lifespan_month = (295 + ((5 * 3600 + 45 * 60 + 36) / (24 * 60 * 60))) / 31  
+
+ltv = arpu * cust_lifespan_month * (gross_margin /100)
+
+print('LTV is: ', ltv)
+```
+
+LTV is:  2028.4866681396377
+So, total revenue that TechStream can expect from a customer over the entire duration of their relationship is around $2,028.5
+
+
 #### 6. LTV / CAC
+
+##### Codes:
+```
+print('LTV/CAC is: ', ltv/cac)
+```
+LTV/CAC is:  1.6709552836401305
+LTV/CAC ratio is greater than 1 so that TechStream seems to be spending less to acquire customers than it earns from them over their lifetime. This could indicate an sustainable business model.
 
 ## Findings Summary:
 
-From the data collected during March 2023, the company need approximatly $2,532 to get a new customer. In this period, they already acquired 63 new customers (churn ones inclusive).
+From the data collected during March 2023, 
+Total revenue of TechStream is $83,033; the company needs approximatly $1,213.97 to get a new customer. In this period, they already acquired 63 new customers (churn ones inclusive) and total of 292 user in March 2023. During March 2023, each customer generated ~$284 in revenue on average. From calculation, total revenue that TechStream can expect from a customer over the entire duration of their relationship is around $2,028.5
+
+The direct cost of producing the goods or services that TechStream sold in March 2023 is $20,840. 
+The Gross margin of TechStream in March 2023 is around 74.9% and LTV/CAC ratio is curently showing that its business is still in good health and expecting a sustainable growth.
+
